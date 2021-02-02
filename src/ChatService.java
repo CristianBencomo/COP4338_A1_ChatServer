@@ -1,24 +1,21 @@
 package src;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-    public class ChatService implements Runnable {
+public class ChatService implements Runnable 
+{
     private Socket socket;
     private Chatroom chatroom;
     private Scanner instream;
     private PrintWriter outstream;
-    private Lock chatroomLock;
     private String username;
+
+    private Lock chatroomLock = new ReentrantLock();
 
     /*
      * Constructs a service object that processes commands from a socket for a chat
@@ -28,11 +25,13 @@ import java.util.concurrent.locks.Lock;
      * @param chatroom for the chatroom
      */
 
-    public ChatService(Socket socket, Chatroom chatroom) {
+    public ChatService(Socket socket, Chatroom chatroom) 
+    {
         this.socket = socket;
         this.chatroom = chatroom;
     }
 
+    
     public void run()
     {
         try 
@@ -55,6 +54,7 @@ import java.util.concurrent.locks.Lock;
         }
     }
 
+    
     public void doService() 
     {
 
@@ -71,12 +71,21 @@ import java.util.concurrent.locks.Lock;
             if (message.equals("LOGOUT")) {
                 logoutUser();
             } else {
-                broadcast(message);
+                chatroomLock.lock();
+                try
+                {
+                chatroom.broadcast(username,message);
+                }
+                finally
+                {
+                    chatroomLock.unlock();
+                }
             }
 
         }
     }
 
+    
     public void signinUser()
     {
         boolean flag = false;
@@ -108,6 +117,7 @@ import java.util.concurrent.locks.Lock;
         }while(!flag);
     }
 
+    
     public void logoutUser() 
     {
         chatroomLock.lock();
@@ -120,34 +130,5 @@ import java.util.concurrent.locks.Lock;
         {
             chatroomLock.unlock();
         }
-    }
-
-    public void broadcast(String message)
-    {
-        ArrayList<String> clients;
-        chatroomLock.lock();
-        try
-        {
-            clients = chatroom.getUserList();
-            
-                for(String client : clients)
-                {
-                    if(username.equals(client))
-                    {
-                        continue;
-                    }
-                    try
-                    {
-                        
-                    }
-                }
-
-                chatroom.receiveMessage();
-        }
-        finally
-        {
-            chatroomLock.unlock();
-        }
-
     }
 }

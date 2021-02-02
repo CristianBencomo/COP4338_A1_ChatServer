@@ -15,14 +15,15 @@ public class ChatServer
         
         final int PORT = 1234;
         ServerSocket server = new ServerSocket(PORT);
-        Chatroom chatroom = new Chatroom();
+        Socket socket = server.accept();
+        Chatroom chatroom = new Chatroom(socket);
 
         System.out.println("Server has been initiated\nWaiting for clients to connect\n");
             
         while(true)
         {
             
-            Socket socket = server.accept();
+            socket = server.accept();
             System.out.println("Client connected.");
             ChatService service = new ChatService(socket, chatroom);
             Thread thread = new Thread(service);

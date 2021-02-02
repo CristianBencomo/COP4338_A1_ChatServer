@@ -1,46 +1,67 @@
 package src;
 
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
 /*
 A chat consisting of  multiple chat users
 @param size the number of users
-*/ 
+*/
 
-public class Chatroom
+public class Chatroom 
 {
     private ArrayList<String> users;
-    private String message;
+    public Socket socket;
+    private PrintWriter outstream; 
 
-    public Chatroom()
+    public Chatroom(Socket socket) 
     {
-        users = new ArrayList<>(); 
+        users = new ArrayList<>();
+        this.socket = socket;
+        try
+        {
+        outstream = new PrintWriter(socket.getOutputStream());
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
     }
 
-    public void addUser(String username)
+    public void addUser(String username) 
     {
         users.add(username);
     }
 
-    public void removeUser(String username)
+    public void removeUser(String username) 
     {
         users.remove(username);
     }
 
-    public int numberOfUsers()
+    public int numberOfUsers() 
     {
         return users.size();
     }
 
-    public ArrayList getUserList()
+    public ArrayList<String> getUserList() 
     {
         return users;
     }
 
-    public void write(String message, Socket socket)
+    public void broadcast(String username, String message)
     {
-        
+            
+        for(String client : users)
+        {
+            if(username.equals(client))
+            {
+                continue;
+            }
+            
+            outstream.write(message);
+            outstream.flush();
+            
+        }
     }
-    
 }
