@@ -1,7 +1,5 @@
 package src;
 
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 
 /*
@@ -12,31 +10,26 @@ A chat consisting of  multiple chat users
 public class Chatroom 
 {
     private ArrayList<String> users;
-    public Socket socket;
-    private PrintWriter outstream; 
+    private ArrayList<ChatService> chatservices;
 
-    public Chatroom(Socket socket) 
+    public Chatroom() 
     {
         users = new ArrayList<>();
-        this.socket = socket;
-        try
-        {
-        outstream = new PrintWriter(socket.getOutputStream());
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
+        chatservices = new ArrayList<>();
+        
+
     }
 
-    public void addUser(String username) 
+    public void addUser(ChatService chatservice, String username) 
     {
         users.add(username);
+        chatservices.add(chatservice);
     }
 
-    public void removeUser(String username) 
+    public void removeUser(ChatService chatservice, String username) 
     {
         users.remove(username);
+        chatservices.remove(chatservice);
     }
 
     public int numberOfUsers() 
@@ -49,19 +42,11 @@ public class Chatroom
         return users;
     }
 
-    public void broadcast(String username, String message)
+    public ChatService getService(String username)
     {
-            
-        for(String client : users)
-        {
-            if(username.equals(client))
-            {
-                continue;
-            }
-            
-            outstream.write(message);
-            outstream.flush();
-            
-        }
+        int index;
+        index = users.indexOf(username);
+
+        return chatservices.get(index);
     }
 }
