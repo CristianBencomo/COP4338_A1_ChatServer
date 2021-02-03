@@ -26,12 +26,14 @@ public class ChatService implements Runnable {
      * @param chatroom for the chatroom
      */
 
-    public ChatService(Socket socket, Chatroom chatroom) {
+    public ChatService(Socket socket, Chatroom chatroom) 
+    {
         this.socket = socket;
         this.chatroom = chatroom;
     }
 
-    public void run() {
+    public void run() 
+    {
         try {
             try {
                 instream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -46,7 +48,8 @@ public class ChatService implements Runnable {
         }
     }
 
-    public void doService() {
+    public void doService() 
+    {
 
         String line;
         
@@ -148,13 +151,11 @@ public class ChatService implements Runnable {
         
         for(String client : clients)
         {
-            if(username.equals(client))
+            if(!username.equals(client))
             {
+                chatroom.getService(client).receiveMessage(username, message);     
             }
-            else
-            {            
-            chatroom.getService(client).receiveMessage(username, message);      
-            }
+           
         }
     }
 
