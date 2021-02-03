@@ -19,11 +19,12 @@ public class ChatService implements Runnable {
     private Lock chatroomLock = new ReentrantLock();
 
     /*
-     * Constructs a service object that processes commands from a socket for a chat
+     * Constructs a service object that runs a thread for each user that connects 
+     * to the server, each connects to the assigned chatroom
      * 
-     * @param socket for the socket
+     * @param socket for the socket of the individual user
      * 
-     * @param chatroom for the chatroom
+     * @param chatroom for the chatroom object that stores each connected user
      */
 
     public ChatService(Socket socket, Chatroom chatroom) 
@@ -48,6 +49,9 @@ public class ChatService implements Runnable {
         }
     }
 
+    /*
+     * The service loops infinately untill the client sends null (client is disconnected)
+     */
     public void doService() 
     {
 
@@ -57,14 +61,20 @@ public class ChatService implements Runnable {
             while ((line = instream.readLine()) != null) 
             {
 
-                if (line.equals("LOGOUT")) {
+                if (line.equals("LOGOUT")) 
+                {
                     logoutUser();
                     break;
-                } else {
+                } 
+                else 
+                {
                     chatroomLock.lock();
-                    try {
+                    try 
+                    {
                         broadcast(line);
-                    } finally {
+                    } 
+                    finally 
+                    {
                         chatroomLock.unlock();
                     }
                 }
@@ -76,7 +86,9 @@ public class ChatService implements Runnable {
         }
     }
 
-    
+    /*
+     * Function that creates a username for the user and stores
+     */
     public void signinUser()
     {
         boolean flag = false;
@@ -122,6 +134,9 @@ public class ChatService implements Runnable {
     }
 
     
+    /*
+     * Function to disconnect the client from the server
+     */
     public void logoutUser() 
     {
         chatroomLock.lock();
@@ -144,7 +159,9 @@ public class ChatService implements Runnable {
         }
     }
 
-
+    /*
+     * Function that writes to every other client in the chatroom
+     */
     public void broadcast(String message)
     {
         ArrayList<String> clients = chatroom.getUserList();     
@@ -155,16 +172,21 @@ public class ChatService implements Runnable {
             {
                 chatroom.getService(client).receiveMessage(username, message);     
             }
-           
         }
     }
 
+    /*
+     * Function to create cleaner code by flushing within the function
+     */
     public void write (String message)
     {
         outstream.write(message);
         outstream.flush();
     }
 
+    /*
+     * This function is called from broadcast to streamline the formatting of the output in each client
+     */
     public void receiveMessage(String username, String message)
     {
         write(username + "> " + message + "\n");

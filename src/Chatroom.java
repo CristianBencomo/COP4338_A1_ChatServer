@@ -3,8 +3,7 @@ package src;
 import java.util.ArrayList;
 
 /*
-A chat consisting of  multiple chat users
-@param size the number of users
+ * A chatroom consisting of multiple users and their respective service
 */
 
 public class Chatroom 
@@ -16,8 +15,6 @@ public class Chatroom
     {
         users = new ArrayList<>();
         chatservices = new ArrayList<>();
-        
-
     }
 
     public void addUser(ChatService chatservice, String username) 

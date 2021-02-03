@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /*
-    A server that manages a simple communication protocol
+ * A server that hosts a chatroom communication
  */
 
 public class ChatServer 
@@ -29,7 +29,5 @@ public class ChatServer
             thread.start();
 
         }
-
-
     }
 }

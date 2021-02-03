@@ -1,14 +1,37 @@
-## Getting Started
+# Chat Server
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+## COP 4338
+Assignment 1
+Cristian Bencomo
 
-## Folder Structure
 
-The workspace contains two folders by default, where:
+## Description
+a client will send 3 types of messages to the other clients
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+> Resquest: BROADCAST username message:     
+> Response: calls the write function of each specific client service other than the sender
+> Meaning: the message sent by 1 client will be displayed for every other client
 
-## Dependency Management
 
-The `JAVA DEPENDENCIES` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-pack/blob/master/release-notes/v0.9.0.md#work-with-jar-files-directly).
+> Request: SIGNIN username 
+> Response: Either accepts the request or denies it
+> Meaning: The program will confirm that there is no other user with the same name, and will then assign the username to the socket
+
+
+> Request: LOGOUT username
+> Response: Goodbye message and remove username
+> Meaning: The program will delete the username from the users Arraylist and close its corresponding thread and socket
+
+
+## Contents
+The src folder contains 3 java files
+*   ChatServer.java contains the main function and creates the server
+*   ChatService.java defines each individual client thread
+*   Chatroom.java stores the user Arraylist and their respective chatservice instance
+
+
+## How to use
+*   Run the main ChatServer 
+*   Check the terminal running the server to confirm that the server is awaiting connections
+*   Connect to the server from different terminals by using telnet, connect to localhost and the port 1234
+*   Chat!
